@@ -1,0 +1,7 @@
+{
+    "require": {
+        "silverorange/castanet": "^2.0",
+        "gbuckingham89/youtube-rss-parser": "^0.1.0",
+        "riimu/kit-urlparser": "^2.1"
+    }
+}
