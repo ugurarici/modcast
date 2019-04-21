@@ -5,10 +5,10 @@ require_once __DIR__."/vendor/autoload.php";
 
 // serves file as xml
 header('Content-Type: application/xml; charset=utf-8');
-//  get uri of YouTube playlist from user
 
 function Modcast()
 {
+	//  get uri of YouTube playlist from user
 	$uri = "https://www.youtube.com/playlist?list=PLN5Tz2x_KM-iOGgMd266yUr4Klb8kL8u5";
 	$uriParser = new \Riimu\Kit\UrlParser\UriParser();
 	$uri = $uriParser->parse($uri);
