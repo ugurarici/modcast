@@ -6,7 +6,7 @@ require_once __DIR__."/vendor/autoload.php";
 // serves file as xml
 header('Content-Type: application/xml; charset=utf-8');
 
-function Modcast()
+function getFeed()
 {
 	//  get uri of YouTube playlist from user
 	$uri = "https://www.youtube.com/playlist?list=PLN5Tz2x_KM-iOGgMd266yUr4Klb8kL8u5";
@@ -20,6 +20,11 @@ function Modcast()
 	$playlistRSSUri = "https://www.youtube.com/feeds/videos.xml?playlist_id=".$uriParams['list'];
 	$youtubeRSSParser = new \Gbuckingham89\YouTubeRSSParser\Parser();
 	$channel = $youtubeRSSParser->loadUrl($playlistRSSUri);
+	return $channel;
+}
+
+function Modcast($channel)
+{
 	//  find each video's audio stream uri
 	$httpClient = new \GuzzleHttp\Client();
 	foreach($channel->videos as $video) {
@@ -69,26 +74,28 @@ function Modcast()
 	}
 
 	$json->timestamp = time();
+	$json->items = count($channel->videos);
 	$json->data = podcastRSSFeed;
 	return $json;
 }
 
-// only sends request if stream expired
+// fetchs rss on every request and if audio uris expired
 // gets data from cache if unexpired
 // serves podcast rss feed
+// checks new videos if available
 $expiresInSeconds = 21540;
 if (file_exists("cache")) {
 	$cache = file_get_contents("cache");
 	$cache = json_decode($cache);
-	if (time() - $cache->timestamp > $expiresInSeconds) {
-		$data = Modcast()->data;
+	if (time() - $cache->timestamp > $expiresInSeconds || $cache->items < count(getFeed()->videos)) {
+		$data = Modcast(getFeed())->data;
 		file_put_contents("cache", $data);
 		echo $data;
 	} else {
 		echo $cache->data;
 	}
 } else {
-	$data = Modcast()->data;
+	$data = Modcast(getFeed())->data;
 	file_put_contents("cache", $data);
 	echo $data;
 }
