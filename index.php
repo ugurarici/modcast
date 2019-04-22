@@ -28,6 +28,7 @@ foreach($channel->videos as $video) {
     $videoInfoText = $response->getBody()->getContents();
     $videoInfo = null;
     parse_str($videoInfoText, $videoInfo);
+    $video->duration = $videoInfo['length_seconds'];
     $vInfo = [$videoInfo['url_encoded_fmt_stream_map'], $videoInfo['adaptive_fmts']];
     $streams = explode(",", implode(",", $vInfo));
     foreach ($streams as $stream) {
@@ -61,6 +62,7 @@ foreach ($channel->videos as $video) {
     $feedItem->setDescription($video->description);
     $feedItem->setPublishDate($video->published_at);
     $feedItem->setMediaUrl($video->audio);
+    $feedItem->setMediaDuration($video->duration);
     $feedItem->setMediaMimeType("audio/mp4");
     $feedItem->setItunesSubtitle($channel->name);
     $feedItem->setItunesSummary($video->description);
