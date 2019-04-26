@@ -78,7 +78,7 @@ function Modcast($channel)
 
 	$json->timestamp = time();
 	$json->videoIdList = ($channel->videoIdList);
-	$json->data = podcastRSSFeed;
+	$json->data = $podcastRSSFeed;
 	return $json;
 }
 
